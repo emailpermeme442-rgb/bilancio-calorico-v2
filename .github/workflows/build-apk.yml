@@ -1,46 +1,48 @@
+
 name: Build Bilancio Calorico APK
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  build-apk:
     runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check HTML
+      - name: Verify source file
         run: |
-          test -f index.html
-          echo "index.html trovato"
+          test -f index
+          echo "File index trovato"
 
-      - name: Set up JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK platform
+      - name: Install Android SDK
         run: |
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Generate minimal Android WebView project
+      - name: Generate Android project
         run: |
           mkdir -p app/src/main/assets
           mkdir -p app/src/main/java/com/bilanciocalorico/app
 
-          cp index.html app/src/main/assets/index.html
+          cp index app/src/main/assets/index.html
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -97,17 +99,14 @@ jobs:
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <application
                   android:label="Bilancio Calorico"
-                  android:theme="@android:style/Theme.Material.Light.NoActionBar"
-                  android:usesCleartextTraffic="false">
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
                   <activity
                       android:name=".MainActivity"
-                      android:exported="true"
-                      android:screenOrientation="unspecified">
-
+                      android:exported="true">
                       <intent-filter>
-                          <action android:name="android.intent.action.MAIN" />
-                          <category android:name="android.intent.category.LAUNCHER" />
+                          <action android:name="android.intent.action.MAIN"/>
+                          <category android:name="android.intent.category.LAUNCHER"/>
                       </intent-filter>
                   </activity>
               </application>
@@ -138,49 +137,33 @@ jobs:
                   settings.setDomStorageEnabled(true);
                   settings.setDatabaseEnabled(true);
                   settings.setAllowFileAccess(true);
-                  settings.setAllowContentAccess(true);
 
                   webView.setWebViewClient(new WebViewClient());
-
-                  if (savedInstanceState != null) {
-                      webView.restoreState(savedInstanceState);
-                  } else {
-                      webView.loadUrl("file:///android_asset/index.html");
-                  }
+                  webView.loadUrl("file:///android_asset/index.html");
               }
 
               @Override
               public void onBackPressed() {
-                  if (webView != null && webView.canGoBack()) {
+                  if (webView.canGoBack()) {
                       webView.goBack();
                   } else {
                       super.onBackPressed();
                   }
               }
-
-              @Override
-              protected void onSaveInstanceState(Bundle outState) {
-                  super.onSaveInstanceState(outState);
-                  if (webView != null) {
-                      webView.saveState(outState);
-                  }
-              }
           }
           EOF
 
-      - name: Set up Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build APK
+      - name: Compile APK
         run: gradle --no-daemon assembleDebug
 
-      - name: Verify APK
+      - name: Prepare APK
         run: |
-          APK="app/build/outputs/apk/debug/app-debug.apk"
-          test -f "$APK"
           mkdir -p dist
-          cp "$APK" dist/Bilancio-Calorico.apk
-          ls -lh dist/Bilancio-Calorico.apk
+          cp app/build/outputs/apk/debug/app-debug.apk dist/Bilancio-Calorico.apk
+          test -s dist/Bilancio-Calorico.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
