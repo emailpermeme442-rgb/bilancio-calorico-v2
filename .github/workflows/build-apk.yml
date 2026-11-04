@@ -1,41 +1,191 @@
-name: Build APK
+name: Build Bilancio Calorico APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      - name: Check HTML
+        run: |
+          test -f index.html
+          echo "index.html trovato"
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: "17"
 
-      - name: Create Android project structure manually
-        run: |
-          # Installiamo un generatore nativo compatibile o creiamo la struttura base gradle
-          npx pwa create temp-pwa --template default --skip-install || true
-          
-          # In alternativa usiamo un tool di Cordova/Capacitor o generiamo direttamente con PWABuilder corretto
-          npm install -g @pwabuilder/pwapush
-          
-      - name: Fallback to direct bubblewrap / PWABuilder web generation
-        run: |
-          # Usiamo npx @pwabuilder/pwapush o generatore alternativo stabile
-          npx @pwabuilder/cli --help || true
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Build Web APK
+      - name: Install Android SDK platform
         run: |
-          echo "Generazione pacchetto completata"
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Generate minimal Android WebView project
+        run: |
+          mkdir -p app/src/main/assets
+          mkdir -p app/src/main/java/com/bilanciocalorico/app
+
+          cp index.html app/src/main/assets/index.html
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+
+          rootProject.name = "BilancioCalorico"
+          include(":app")
+          EOF
+
+          cat > build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
+          EOF
+
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          EOF
+
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+
+          android {
+              namespace 'com.bilanciocalorico.app'
+              compileSdk 35
+
+              defaultConfig {
+                  applicationId 'com.bilanciocalorico.app'
+                  minSdk 23
+                  targetSdk 28
+                  versionCode 1
+                  versionName '1.0'
+              }
+          }
+          EOF
+
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <application
+                  android:label="Bilancio Calorico"
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar"
+                  android:usesCleartextTraffic="false">
+
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:screenOrientation="unspecified">
+
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          cat > app/src/main/java/com/bilanciocalorico/app/MainActivity.java <<'EOF'
+          package com.bilanciocalorico.app;
+
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+
+          public class MainActivity extends Activity {
+              private WebView webView;
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+
+                  webView = new WebView(this);
+                  setContentView(webView);
+
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setAllowFileAccess(true);
+                  settings.setAllowContentAccess(true);
+
+                  webView.setWebViewClient(new WebViewClient());
+
+                  if (savedInstanceState != null) {
+                      webView.restoreState(savedInstanceState);
+                  } else {
+                      webView.loadUrl("file:///android_asset/index.html");
+                  }
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+
+              @Override
+              protected void onSaveInstanceState(Bundle outState) {
+                  super.onSaveInstanceState(outState);
+                  if (webView != null) {
+                      webView.saveState(outState);
+                  }
+              }
+          }
+          EOF
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build APK
+        run: gradle --no-daemon assembleDebug
+
+      - name: Verify APK
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -f "$APK"
+          mkdir -p dist
+          cp "$APK" dist/Bilancio-Calorico.apk
+          ls -lh dist/Bilancio-Calorico.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bilancio-Calorico-APK
+          path: dist/Bilancio-Calorico.apk
+          if-no-files-found: error
+          retention-days: 14
