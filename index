@@ -1,1 +1,793 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff007f">
+<meta name="description" content="Diario calorico manuale in stile 80s Aerobic Fitness.">
+<title>Bilancio Calorico v5.19 · 80s Aerobic Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #12091f;
+  --panel: #201335;
+  --panel-inner: #ffffff;
+  --text: #ffffff;
+  --text-dark: #12091f;
+  --magenta: #ff007f;
+  --cyan: #00f0ff;
+  --yellow: #ffee00;
+  --green: #39ff14;
+  --border: 3px solid #000000;
+  --retro-shadow: 4px 4px 0px #000000;
+  --radius: 8px;
+}
 
+*{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+body{
+  margin:0;
+  background-color: var(--bg);
+  background-image: linear-gradient(135deg, #1b0c30 0%, #0d0617 100%);
+  color: var(--text);
+  font: 14px/1.4 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+}
+
+button, input, select{font:inherit}
+button{cursor:pointer; border:0; background:transparent}
+
+main{max-width:760px; margin:auto; padding:16px 14px 110px}
+
+.top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px}
+.brand{
+  background: var(--yellow);
+  color: var(--text-dark);
+  font-size: 11px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-weight: 900;
+  padding: 4px 8px;
+  border: var(--border);
+  box-shadow: 2px 2px 0px #000;
+  display: inline-block;
+  transform: rotate(-1deg);
+}
+.top h1{font-size: 24px; letter-spacing: -.03em; margin: 4px 0 0; font-weight: 900; text-transform: uppercase; color: var(--cyan); text-shadow: 2px 2px 0px #000;}
+
+.dateinput-wrap{
+  background: var(--cyan);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  box-shadow: var(--retro-shadow);
+}
+.dateinput{
+  background: transparent;
+  border: 0;
+  color: var(--text-dark);
+  font-size: 13px;
+  font-weight: 900;
+  color-scheme: light;
+  outline: none;
+  cursor: pointer;
+}
+
+.profile{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px}
+.profileitem{
+  background: var(--panel);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 8px 4px;
+  box-shadow: var(--retro-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.profileitem label{display:block; font-size:9px; color: var(--cyan); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; font-weight:900; text-align:center}
+.profileitem input, .profileitem select{width:100%; background:transparent; border:0; color:var(--text); padding:0; outline:none; font-weight:900; font-size:14px; text-align:center; color-scheme:dark}
+.profileitem select option{background:var(--panel); color: #fff;}
+
+.stepper{display:flex; align-items:center; justify-content:space-between; width:100%; gap:2px}
+.stepper input{flex:1; min-width:0; text-align:center; font-size:13px; font-weight:900; padding:0; border:0; background:transparent; color:var(--text)}
+.stepper button{
+  flex:0 0 22px; width:22px; height:24px; padding:0;
+  border: 2px solid #000;
+  border-radius: 4px;
+  background: var(--magenta);
+  color: #fff;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  box-shadow: 1px 1px 0px #000;
+}
+.stepper button:active{transform: translate(1px, 1px); box-shadow:none}
+
+.targetbox{
+  grid-column: span 4;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--retro-shadow);
+}
+.targetbox .box-title{font-size: 11px; color: var(--text); font-weight: 900; text-transform: uppercase}
+.targetbox .box-value{display:flex; align-items:center; justify-content:flex-end; gap:6px}
+.targetbox .value-number{color: var(--green); font-size: 18px; font-weight: 900}
+.targetbox input{background:transparent; border:0; color:var(--green); font-size:18px; font-weight:900; width:85px; text-align:right; outline:none; padding:0}
+.targetbox input[aria-invalid="true"]{color:var(--yellow); text-decoration:underline wavy var(--yellow)}
+.targetbox .target-units{color:var(--cyan); font-size:11px; font-weight:900}
+
+.info-toggle{
+  flex: 0 0 26px; width: 26px; height: 26px; padding: 0;
+  display: inline-grid; place-items: center;
+  border: 2px solid #000;
+  background: var(--yellow);
+  color: var(--text-dark);
+  border-radius: 50%;
+  font-size: 12px; font-weight: 900;
+  box-shadow: 2px 2px 0px #000;
+}
+.info-toggle:active{transform: translate(1px, 1px); box-shadow:none}
+.targetbox .tefbox{grid-column:1 / -1; margin-top:8px}
+.targetbox .validation-note{grid-column:1 / -1; color:var(--yellow); font-size:10px; margin-top:4px; font-weight:900}
+
+.card{
+  background: var(--panel);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--retro-shadow);
+  margin-bottom: 16px;
+}
+
+.hero{
+  background: var(--magenta);
+  color: #fff;
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0px #000;
+  padding: 20px 16px;
+}
+.herotop{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
+.eyebrow{font-size:11px; color:var(--yellow); letter-spacing:.1em; text-transform:uppercase; font-weight:900}
+.daylabel{font-size:13px; color:#fff; font-weight:900}
+
+.steps-top{
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:12px;
+  padding:14px 16px; margin-bottom:14px;
+  background: var(--green);
+  color: var(--text-dark);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--retro-shadow);
+}
+.steps-top label{display:block; font-size:12px; font-weight:900; text-transform:uppercase; color:var(--text-dark)}
+.steps-top .hint{margin:0; font-size:10px; color:var(--text-dark); font-weight:700}
+.steps-input{display:flex; align-items:center; gap:8px}
+.steps-input input{
+  width:105px; background:#fff; border: 2px solid #000; border-radius: 6px;
+  color:var(--text-dark); font-size:18px; font-weight:900; text-align:center; padding:6px 4px;
+  box-shadow: 2px 2px 0px #000;
+}
+.steps-input span{font-size:14px; color:var(--text-dark); font-weight:900}
+
+.balance-visual{
+  padding:18px 12px; margin-top:10px; border-radius: var(--radius);
+  background: #fff;
+  color: var(--text-dark);
+  border: var(--border);
+  box-shadow: 3px 3px 0px #000;
+}
+.balance-caption{text-transform:uppercase; letter-spacing:.1em; color:#000; font-size:10px; font-weight:900; text-align:center}
+.balance-delta{
+  font-size:clamp(36px, 9vw, 52px); font-weight:950; letter-spacing:-.04em; line-height:1;
+  text-align:center; margin:8px 0 4px; color:#000; font-variant-numeric:tabular-nums;
+}
+.balance-delta.deficit{color: #0044ff}
+.balance-delta.surplus{display:block; color: #ff0000; margin:8px 0 4px}
+.balance-sub{text-align:center; font-size:11px; color:#333; font-weight:700; margin-bottom:14px}
+
+.balance-poles{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center}
+.balance-pole{
+  min-width:0; padding:10px 8px; border-radius: 6px;
+  background: var(--cyan); border: 2px solid #000; text-align:center;
+  box-shadow: 2px 2px 0px #000;
+}
+.balance-pole small{display:block; color:#000; font-size:9px; text-transform:uppercase; font-weight:900}
+.balance-pole strong{display:block; font-size:clamp(16px, 4vw, 22px); font-weight:900; color:#000; margin-top:2px}
+.balance-vs{font-size:11px; color:#000; font-weight:900}
+
+.balance-track{height:10px; border-radius:99px; background:#ddd; position:relative; margin:18px 4px 8px; border: 2px solid #000; overflow:visible}
+.balance-track:before{content:""; position:absolute; left:50%; top:-4px; bottom:-4px; width:3px; background:#000}
+.balance-marker{
+  position:absolute; left:50%; top:50%; width:18px; height:18px; border-radius:50%;
+  background: var(--yellow); border: 2px solid #000; transform:translate(-50%,-50%);
+  box-shadow: 2px 2px 0px #000; transition:left .25s ease;
+}
+.balance-marker.deficit{background: var(--cyan)}
+.balance-marker.surplus{background: var(--magenta)}
+.balance-scale{display:flex; justify-content:space-between; color:#000; font-size:10px; font-weight:900; text-transform:uppercase}
+
+.numbers{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px}
+.numcard{
+  background: #fff; border: 2px solid #000; border-radius: 6px; padding: 10px 8px; text-align:left;
+  box-shadow: 2px 2px 0px #000; color: #000;
+}
+.numlabel{font-size:9px; color:#555; font-weight:900; text-transform:uppercase}
+.numvalue{font-size:clamp(15px, 3.5vw, 19px); font-weight:900; margin:4px 0 0; white-space:nowrap; color:#000}
+.numvalue small{font-size:9px; color:#555; font-weight:900}
+.remaining{color:#007700}
+.hint{font-size:11px; color:var(--cyan); margin-top:4px; font-weight:700}
+
+.home-actions{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px}
+.home-actions button{
+  display:flex; align-items:center; justify-content:center; gap:8px; min-width:0;
+  border: var(--border); border-radius: var(--radius); padding: 14px 10px;
+  font-size:12px; font-weight:900; text-transform:uppercase;
+  box-shadow: var(--retro-shadow); transition: transform 0.05s;
+}
+.home-actions button:active{transform: translate(2px, 2px); box-shadow:none}
+.home-actions .food-action{background: var(--yellow); color: var(--text-dark)}
+.home-actions .activity-action{background: var(--cyan); color: var(--text-dark)}
+.home-actions .plus{font-size:18px; line-height:1}
+
+.macro{font-size:11px; color:var(--yellow); margin-top:12px; font-weight:900}
+.view{display:none}.view.active{display:block; animation: fadeIn .15s ease both}
+@keyframes fadeIn{from{opacity:0} to{opacity:1}}
+
+.sectionhead{display:flex; justify-content:space-between; align-items:center; gap:12px; margin:22px 2px 10px}
+.sectionhead h2{font-size:16px; margin:0; font-weight:900; text-transform:uppercase; color: var(--cyan)}
+.pill{
+  border: 2px solid #000; border-radius: 99px; color: var(--text-dark); padding:3px 10px; font-size:10px;
+  background: var(--yellow); font-weight:900; text-transform:uppercase; box-shadow: 2px 2px 0px #000;
+}
+
+.foodrow, .historyrow{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 4px; border-bottom:2px solid rgba(255,255,255,0.15)}
+.foodrow:last-child, .historyrow:last-child{border-bottom:0}
+.foodrow strong{display:block; font-size:13px; font-weight:900; color:#fff}
+.foodrow small{display:block; color:var(--cyan); font-size:11px; margin-top:2px; font-weight:700}
+.foodright{display:flex; align-items:center; gap:10px; white-space:nowrap}
+.foodright b{font-size:13px; font-weight:900; color: var(--yellow)}
+.iconbtn{background:transparent; border:0; color:var(--magenta); font-size:22px; padding:0 4px; font-weight:900}
+.empty{color:var(--cyan); text-align:center; padding:24px 10px; font-size:12px; font-weight:900}
+
+.actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px}
+.btn, .mainaction{
+  border: var(--border); background: var(--panel); color:var(--text); border-radius:var(--radius);
+  padding:12px 14px; font-weight:900; width:100%; cursor:pointer; text-transform:uppercase;
+  box-shadow: var(--retro-shadow); transition: transform 0.05s; font-size:12px;
+}
+.btn:active, .mainaction:active{transform: translate(2px, 2px); box-shadow:none}
+.btn.primary, .mainaction{background: var(--yellow); color: var(--text-dark)}
+.btn.danger{background: #ff3333; color: #fff}
+
+.historyrow{
+  width:100%; background: #fff; color: var(--text-dark); border: var(--border); border-radius: var(--radius);
+  text-align:left; margin:8px 0; padding:12px 14px; box-shadow: var(--retro-shadow);
+}
+.historyrow:active{transform: translate(2px, 2px); box-shadow:none}
+.histbadge{font-size:9px; font-weight:900; border-radius:4px; padding:3px 7px; white-space:nowrap; border: 2px solid #000; text-transform:uppercase}
+.histbadge.deficit{color:#000; background: var(--cyan)}
+.histbadge.surplus{color:#000; background: var(--magenta)}
+.histbadge.balance{color:#000; background: var(--green)}
+.histdate{min-width:80px; font-size:12px; font-weight:900; color:#000}
+.histnumbers{flex:1; font-size:12px; color:#333; font-weight:900}
+.arrow{font-size:18px; color:#000; font-weight:900}
+
+.field{margin:12px 0}
+.field label{display:block; color:var(--cyan); font-size:10px; margin-bottom:4px; font-weight:900; text-transform:uppercase}
+.field input, .field select{
+  width:100%; background:#fff; border: var(--border); color:var(--text-dark);
+  border-radius: 6px; padding:10px; min-height:44px; font:inherit; color-scheme:light; outline:none; font-weight:900;
+}
+
+.history-hero{
+  background: var(--cyan); color: var(--text-dark); border: var(--border); border-radius: var(--radius);
+  padding:20px 16px; text-align:center; margin-bottom:16px; box-shadow: 6px 6px 0px #000;
+}
+.history-total{font-size:clamp(32px, 8vw, 44px); font-weight:950; letter-spacing:-.04em; margin:4px 0; color:#000}
+.history-total.surplus{color: var(--magenta)}
+.history-average{font-size:12px; color:#000; font-weight:900}
+.date-range{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.date-range label{font-size:9px; color:var(--cyan); display:grid; gap:4px; font-weight:900; text-transform:uppercase}
+.history-date{width:100%; border:var(--border); border-radius:6px; padding:10px; background:#fff; color:#000; font:inherit; color-scheme:light; font-weight:900}
+.history-chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
+.history-chips .btn{width:auto; border-radius:99px; padding:6px 12px; font-size:10px; font-weight:900; background:#fff; color:#000}
+
+#balanceHint{
+  display:block; width:100%; border-radius:var(--radius); padding:12px 14px; font-size:11px;
+  line-height:1.4; text-align:left; margin:0 0 14px; background: var(--panel);
+  border: var(--border); color: var(--cyan); font-weight:900;
+}
+.settingsgrid{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+
+.nav{
+  position:fixed; z-index:20; bottom:0; left:0; right:0;
+  background: var(--panel); border-top: 3px solid #000;
+  padding:10px max(16px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));
+  display:flex; justify-content:center; gap:8px;
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+}
+.nav button{
+  flex:1; max-width:150px; border: var(--border); background: #fff;
+  color: var(--text-dark); padding:8px 4px; border-radius: 6px; font-size:11px; font-weight:900;
+  text-transform:uppercase; box-shadow: 2px 2px 0px #000; transition: transform 0.05s;
+}
+.nav button.active{background: var(--yellow); color: var(--text-dark); transform: translate(-1px, -1px); box-shadow: 3px 3px 0px #000}
+.nav span{width:100%; height:20px; display:flex; align-items:center; justify-content:center; font-size:16px}
+
+.shade{position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:30; opacity:0; pointer-events:none; transition:opacity .2s}
+.shade.open{opacity:1; pointer-events:auto}
+.sheet, .modal{
+  position:fixed; z-index:31; left:50%; transform:translate(-50%,120%); transition:transform .2s ease;
+  background: var(--panel); border: 4px solid #000; border-radius: 16px 16px 0 0;
+  width:min(100%,560px); bottom:0; padding:22px 16px calc(22px + env(safe-area-inset-bottom));
+  max-height:85vh; overflow:auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+}
+.sheet.open, .modal.open{transform:translate(-50%,0)}
+.sheet h2, .modal h2{margin:0 0 6px; font-size:18px; font-weight:900; text-transform:uppercase; color: var(--cyan)}
+.sheet p, .modal p{color: #fff; font-size:12px; margin:0 0 16px; font-weight:700}
+.choice{
+  display:flex; align-items:center; gap:12px; width:100%; padding:14px; border: var(--border);
+  border-radius: var(--radius); background: #fff; color: var(--text-dark); text-align:left; margin-top:8px;
+  box-shadow: var(--retro-shadow); transition: transform 0.05s;
+}
+.choice:active{transform: translate(2px, 2px); box-shadow:none}
+.choice .emoji{width:40px; height:40px; border-radius: 6px; background: var(--yellow); border: 2px solid #000; display:grid; place-items:center; font-size:20px}
+.choice strong{display:block; font-size:13px; font-weight:900; text-transform:uppercase; color:#000}
+.choice small{color:#444; font-size:11px; font-weight:700}
+
+.search{width:100%; background:#fff; border: var(--border); border-radius: 6px; color:var(--text-dark); padding:12px; margin:10px 0; outline:none; font-weight:900}
+.suggestion{display:flex; justify-content:space-between; align-items:center; width:100%; border:0; border-bottom:2px solid rgba(255,255,255,0.2); background:transparent; color:#fff; padding:12px 4px; text-align:left}
+.suggestion b{font-size:12px; color:var(--yellow)}
+.closebar{display:flex; justify-content:space-between; align-items:center}
+.closebar button{border: var(--border); background: var(--magenta); width:32px; height:32px; border-radius:50%; color:#fff; font-size:18px; font-weight:900; display:grid; place-items:center; box-shadow: 2px 2px 0px #000}
+
+.foot{font-size:10px; color:var(--cyan); text-align:center; margin-top:22px; font-weight:900; text-transform:uppercase}
+.hidden{display:none!important}
+.toast{
+  position:fixed; z-index:50; bottom:90px; left:50%; transform:translate(-50%,15px);
+  opacity:0; pointer-events:none; background: var(--yellow); color: var(--text-dark); font-weight:900;
+  padding:10px 16px; border-radius: var(--radius); border: var(--border); box-shadow: var(--retro-shadow);
+  transition:.15s; font-size:12px; text-transform:uppercase;
+}
+.toast.visible{opacity:1; transform:translate(-50%,0)}
+.tefbox{background:#fff; color:var(--text-dark); border: var(--border); border-radius:6px; padding:12px; margin-top:12px; font-size:11px; font-weight:900}
+.tefbox strong{color:var(--magenta); display:block; margin-bottom:2px; font-weight:900; text-transform:uppercase}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+  <div><div class="brand">● 80S AEROBIC</div><h1>Il tuo equilibrio</h1></div>
+  <div class="dateinput-wrap"><input class="dateinput" id="day" type="date" aria-label="Seleziona giornata"></div>
+</header>
+
+<section class="view active" id="view-home">
+<section class="profile" aria-label="Profilo e obiettivo">
+<div class="profileitem"><label for="age">Età</label><input id="age" type="number" min="13" max="110" value="30"></div>
+<div class="profileitem"><label for="weight">Peso · kg</label><div class="stepper"><button type="button" data-step="weight" data-delta="-0.5" aria-label="Riduci peso">−</button><input id="weight" type="number" min="25" max="350" step="0.5" value="70"><button type="button" data-step="weight" data-delta="0.5" aria-label="Aumenta peso">+</button></div></div>
+<div class="profileitem"><label for="height">Altezza · cm</label><div class="stepper"><button type="button" data-step="height" data-delta="-1" aria-label="Riduci altezza">−</button><input id="height" type="number" min="100" max="250" step="1" value="175"><button type="button" data-step="height" data-delta="1" aria-label="Aumenta altezza">+</button></div></div>
+<div class="profileitem"><label for="gender">Sesso</label><select id="gender"><option value="male">Uomo</option><option value="female">Donna</option></select></div>
+
+<!-- BMR Box -->
+<div class="targetbox" id="bmrBox">
+  <div><span class="box-title">Metabolismo basale (BMR)</span></div>
+  <div class="box-value"><span id="bmrDisplay" class="value-number">1.500</span><span class="target-units">kcal</span><button type="button" class="info-toggle" id="bmrInfoToggle" aria-label="Spiegazione del metabolismo basale" aria-expanded="false" aria-controls="bmrInfo">i</button></div>
+  <div id="bmrInfo" class="tefbox hidden"><strong>Come si calcola il BMR?</strong> Stima a riposo con formula Mifflin–St Jeor. Non comprende passi o allenamenti.</div>
+</div>
+
+<div class="targetbox" id="targetBox">
+  <div><label class="box-title" for="target">Obiettivo calorico giornaliero</label></div>
+  <div class="box-value"><input id="target" type="number" min="500" max="10000" step="1" value="2000" inputmode="numeric" aria-describedby="targetInfo targetValidation"><span class="target-units">kcal</span><button type="button" class="info-toggle" id="targetInfoToggle" aria-label="Spiegazione dell'obiettivo calorico" aria-expanded="false" aria-controls="targetInfo">i</button></div>
+  <div id="targetInfo" class="tefbox hidden"><strong>Come funziona il target?</strong> Il tuo obiettivo di assunzione calorica giornaliera, impostato manualmente.</div>
+  <div id="targetValidation" class="validation-note hidden" role="status" aria-live="polite">Valore consentito: 500 – 10.000 kcal.</div>
+</div>
+</section>
+
+<section class="steps-top" aria-label="Attività giornaliera">
+  <div><label for="homeSteps">I tuoi passi oggi</label><div class="hint" id="activityLevel">Stima del consumo da camminata</div></div>
+  <div class="steps-input"><input id="homeSteps" type="number" min="0" max="100000" step="1" inputmode="numeric" placeholder="0" aria-label="Totale passi giornalieri"><span>passi</span></div>
+</section>
+
+<div class="card hero"><div class="herotop"><div><div class="eyebrow">Entrata · Uscita</div><div class="daylabel" id="dayLabelSub">Il tuo bilancio energetico</div></div><span class="pill" id="dayStatusPill">OFFLINE</span></div>
+<div class="balance-visual">
+<div class="balance-caption">Saldo Energetico Reale</div>
+<div class="balance-delta" id="balanceDelta">0 kcal</div>
+<div class="balance-sub" id="balanceSub">Assunte meno spesa energetica totale (TDEE)</div>
+<div class="balance-poles">
+<div class="balance-pole"><small>Assunte</small><strong id="intake">0</strong></div>
+<div class="balance-vs">VS</div>
+<div class="balance-pole"><small>TDEE Spesa</small><strong id="burnNum">—</strong></div>
+</div>
+<div class="balance-track" aria-label="Saldo energetico rispetto allo zero"><span class="balance-marker" id="balanceMarker"></span></div>
+<div class="balance-scale"><span>Deficit</span><span>Equilibrio 0</span><span>Surplus</span></div>
+</div>
+<div class="numbers">
+<div class="numcard"><div class="numlabel">Target giornaliero</div><div class="numvalue" id="targetNum">— <small>kcal</small></div></div>
+<div class="numcard"><div class="numlabel" id="remainingLabel">kcal al target</div><div class="numvalue remaining" id="remaining">2.000</div><div class="hint">rispetto al target</div></div>
+<div class="numcard"><div class="numlabel">TEF stimato</div><div class="numvalue" id="tefNum">— <small>kcal</small></div></div>
+</div>
+<div class="home-actions"><button class="food-action" id="addFoodHome"><span class="plus">＋</span> Aggiungi cibo</button><button class="activity-action" id="addActivityHome"><span class="plus">＋</span> Aggiungi attività</button></div>
+<div class="macro" id="macro">Macro facoltativi · nessun dato inserito</div>
+</div>
+
+<div class="sectionhead"><h2>Diario di oggi</h2></div><div class="pill" id="balanceHint">TEF stimato in base ai macro disponibili</div>
+<div class="card">
+  <div class="foodrow"><div><strong>Totale introito oggi</strong><small>Calorie e macro totali del diario</small></div><div class="foodright"><b id="balanceNum" style="color:var(--yellow);font-size:15px">+0 kcal</b></div></div>
+  <div id="foodList"></div>
+  <div class="tefbox"><strong>💡 Come viene stimato il TDEE?</strong> TDEE = BMR + passi + allenamenti + TEF.</div>
+  <div class="tefbox" style="margin-top:6px"><strong>💡 Cos'è il TEF?</strong> Stimato dai macro disponibili: 7,5% C, 22,5% P, 2,5% G.</div>
+  <div class="actions"><button class="btn primary" id="saveDay">Salva giornata</button><button class="btn danger" id="resetDay">Azzera giornata</button></div>
+</div>
+</section>
+
+<section class="view" id="view-pantry"><div class="sectionhead"><h2>La tua Dispensa</h2><span class="pill">Cibi personalizzati</span></div><div class="card"><p class="hint" style="color:#fff">Valori nutrizionali per 100 g. Gli alimenti della Dispensa appaiono in cima alla ricerca.</p><button class="btn primary" id="openAddPantry" style="width:100%">＋ Aggiungi alimento</button><div id="pantryList"></div></div></section>
+
+<section class="view" id="view-history"><div class="sectionhead"><h2>Storico & Analisi</h2><span class="pill">Bilancio periodo</span></div>
+<div class="history-hero"><div class="eyebrow">Saldo accumulato del periodo</div><div id="historyTotal" class="history-total">— kcal</div><div id="historyAverage" class="history-average">Seleziona intervallo</div></div>
+<div class="card history-controls"><div class="date-range"><label>Da data<input class="dateinput history-date" type="date" id="historyFrom"></label><label>A data<input class="dateinput history-date" type="date" id="historyTo"></label></div><div class="history-chips"><button class="btn" data-history-range="7">Ultimi 7 giorni</button><button class="btn" data-history-range="28">Ultime 4 settimane</button><button class="btn" data-history-range="all">Tutto</button></div></div>
+<div class="card history-card"><div id="historyList"></div><div class="empty hidden" id="historyEmpty">Nessuna giornata salvata nell’intervallo selezionato.</div></div><div class="foot">Il TEF è stimato dai macro registrati.</div></section>
+
+<section class="view" id="view-settings"><div class="sectionhead"><h2>Profilo / Impostazioni</h2></div><div class="card"><div class="hint" style="color:#fff">BMR stimato con Mifflin–St Jeor. TDEE sommando BMR, passi, attività e TEF.</div><button class="btn primary" id="saveProfile" style="margin-top:12px">Salva dati personali</button></div><div class="sectionhead"><h2>Backup e dati</h2></div><div class="card"><p class="hint" style="color:#fff">Esporta o importa i dati locali (Dispensa, diario e attività).</p><div class="actions"><button class="btn" id="export">Esporta backup JSON</button><button class="btn" id="importBtn">Importa backup</button><input id="importFile" class="hidden" type="file" accept="application/json,.json"></div></div></section><div class="foot">Bilancio Calorico v5.19 · 80S Aerobic Edition</div>
+</main>
+
+<nav class="nav"><button class="active" data-view="home"><span aria-hidden="true">🏠</span>Home</button><button data-view="pantry"><span aria-hidden="true">🥗</span>Dispensa</button><button data-view="history"><span aria-hidden="true">📅</span>Storico</button><button data-view="settings"><span aria-hidden="true">⚙️</span>Profilo</button></nav>
+
+<div class="shade" id="sheetShade"></div>
+<div class="sheet" id="actionSheet"><h2>Cosa vuoi aggiungere?</h2><p>Il cibo aumenta le calorie introdotte; l'attività viene conteggiata nella spesa energetica.</p><button class="choice" id="chooseFood"><span class="emoji">🍎</span><span><strong>Cibo</strong><small>Dispensa, database o kcal dirette</small></span></button><button class="choice" id="chooseActivity"><span class="emoji">🏃</span><span><strong>Allenamento / attività</strong><small>Calorie attive stimate</small></span></button><button class="choice" id="chooseSteps"><span class="emoji">👟</span><span><strong>Passi</strong><small>Inserisci il totale giornaliero del tracker</small></span></button></div>
+
+<div class="shade" id="modalShade"></div>
+<div class="modal" id="foodModal"><div class="closebar"><h2>Aggiungi cibo</h2><button id="closeFood">×</button></div><p>Cerca un alimento (valori per 100 g).</p><input class="search" id="foodSearch" placeholder="Cerca mela, riso, pizza…" autocomplete="off"><div id="foodChoices"></div><button class="btn" id="genericOpen" style="width:100%;margin-top:12px">＋ Cibo generico · kcal e macro</button></div>
+<div class="modal" id="quantityModal"><div class="closebar"><h2 id="quantTitle">Quantità alimento</h2><button id="closeQuantity">×</button></div><p id="quantSub">Valori per 100 g.</p><form id="quantityForm"><div class="field"><label for="quantInput">Quantità (in grammi)</label><input id="quantInput" type="number" min="1" max="5000" value="100" required></div><button class="mainaction" type="submit">Aggiungi al diario</button></form></div>
+<div class="modal" id="pantryAddModal"><div class="closebar"><h2>Nuovo alimento in Dispensa</h2><button id="closePantry">×</button></div><p>Valori nutrizionali per 100 g.</p><form id="pantryForm"><div class="field"><label for="pantryName">Nome alimento</label><input id="pantryName" required maxlength="90" placeholder="Es. Pane di segale"></div><div class="field"><label for="pantryKcal">Calorie / 100 g</label><input id="pantryKcal" type="number" min="1" max="1000" required placeholder="240"></div><div class="settingsgrid"><div class="field"><label for="pantryC">Carboidrati / 100 g</label><input id="pantryC" type="number" min="0" step="0.1" placeholder="0"></div><div class="field"><label for="pantryP">Proteine / 100 g</label><input id="pantryP" type="number" min="0" step="0.1" placeholder="0"></div></div><div class="field"><label for="pantryF">Grassi / 100 g</label><input id="pantryF" type="number" min="0" step="0.1" placeholder="0"></div><button class="mainaction" type="submit">Salva in Dispensa</button></form></div>
+<div class="modal" id="genericModal"><div class="closebar"><h2>Cibo generico</h2><button id="closeGeneric">×</button></div><p>Inserisci i valori della porzione consumata.</p><form id="genericForm"><div class="field"><label for="genericName">Nome</label><input id="genericName" required maxlength="90" placeholder="Es. pranzo fuori"></div><div class="field"><label for="genericKcal">Calorie totali (kcal)</label><input id="genericKcal" type="number" min="1" max="15000" required placeholder="650"></div><div class="settingsgrid"><div class="field"><label for="genericC">Carboidrati (g) · facoltativi</label><input id="genericC" type="number" min="0" max="2000" step="0.1" placeholder="Ignoto"></div><div class="field"><label for="genericP">Proteine (g) · facoltative</label><input id="genericP" type="number" min="0" max="2000" step="0.1" placeholder="Ignoto"></div></div><div class="field"><label for="genericF">Grassi (g) · facoltativi</label><input id="genericF" type="number" min="0" max="2000" step="0.1" placeholder="Ignoto"></div><button class="mainaction" type="submit">Aggiungi al diario</button></form></div>
+<div class="modal" id="stepsModal"><div class="closebar"><h2>＋ Passi</h2><button id="closeSteps">×</button></div><p>Inserisci il totale dei passi del giorno.</p><form id="stepsForm"><div class="field"><label for="stepsTotal">Passi totali del giorno</label><input id="stepsTotal" type="number" min="0" max="100000" step="1" required placeholder="Es. 12500"></div><div class="hint" id="stepsPreview" style="color:#000">I passi extra saranno calcolati in automatico.</div><button class="mainaction" type="submit">Salva passi</button></form></div>
+<div class="modal" id="activityModal"><div class="closebar"><h2>Registra movimento</h2><button id="closeActivity">×</button></div><p>Inserisci le calorie attive stimate dell’allenamento.</p><form id="activityForm"><div class="field"><label for="activityName">Attività</label><input id="activityName" maxlength="90" placeholder="Es. palestra, corsa"></div><div class="field"><label for="activityKcal">Calorie attive (kcal)</label><input id="activityKcal" type="number" min="1" max="5000" required placeholder="250"></div><button class="mainaction" type="submit">Registra attività</button></form></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id), STORE='bilancioCaloricoApp_v1';
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const fmt=x=>Math.round(Number(x)||0).toLocaleString('it-IT');
+const num=v=>{const x=Number(v);return Number.isFinite(x)&&x>0?x:0};
+const val=(v,f=0)=>v!==undefined&&v!==null&&v!==''&&Number.isFinite(Number(v))?Number(v):f;
+const defaults={version:5.19,pantry:[],days:{},settings:{target:null,targetEdited:false,gender:'male',age:30,weight:70,height:175,activity:1.2}};
+let db=structuredClone(defaults), activeDay=today(), historyFilter=30, selectedFood=null, loadSafeToPersist=true;
+const foods=[
+{name:'Mela',k:52,c:14,p:.3,f:.2},{name:'Banana',k:89,c:23,p:1.1,f:.3},{name:'Yogurt greco 0%',k:59,c:3.6,p:10,f:0},{name:'Uova intere',k:155,c:1.1,p:13,f:11},{name:'Petto di pollo',k:165,c:0,p:31,f:3.6},{name:'Riso crudo',k:360,c:79,p:7,f:.6},{name:'Pasta secca',k:355,c:72,p:12,f:1.5},{name:'Pane comune',k:265,c:49,p:9,f:3.2},{name:'Pizza margherita',k:271,c:33,p:10,f:10},{name:'Tonno al naturale',k:116,c:0,p:26,f:1},{name:'Lenticchie cotte',k:116,c:20,p:9,f:.4},{name:'Salmone',k:208,c:0,p:20,f:13},{name:'Pesce spada',k:144,c:0,p:20,f:6},{name:'Biscotti integrali',k:436,c:75,p:8.7,f:10},{name:'Fiocchi d’avena',k:372,c:58,p:13.5,f:7},{name:'Olio extravergine d’oliva',k:884,c:0,p:0,f:100},{name:'Proteine in polvere',k:400,c:8,p:80,f:6},{name:'Cioccolato fondente',k:575,c:46,p:8,f:42}
+];
+function blank(){return {version:5.19, saved:false, foods:[], activities:[], totalSteps:'', workoutKcal:0, bmrSnapshot:null, tdeeSnapshot:null}}
+function safeNumber(value,fallback=0){if(value===null||value===undefined||(typeof value==='string'&&value.trim()===''))return fallback;const n=Number(value);return Number.isFinite(n)?n:fallback;}
+function parseValidNumber(value,min,max,{allowBlank=false}={}){if(value===null||value===undefined||(typeof value==='string'&&value.trim()===''))return allowBlank?null:NaN;const n=Number(value);return Number.isFinite(n)&&n>=min&&n<=max?n:NaN;}
+function validSnapshot(v,min=1,max=50000){return typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max}
+
+function upgrade(raw){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Backup non valido');
+ const sourceDays=raw.days&&typeof raw.days==='object'&&!Array.isArray(raw.days)?raw.days:(raw.data?.days&&typeof raw.data.days==='object'&&!Array.isArray(raw.data.days)?raw.data.days:null);
+ if(!sourceDays)throw Error('Backup non valido: manca lo storico');
+ const s=raw.settings&&typeof raw.settings==='object'&&!Array.isArray(raw.settings)?raw.settings:{};
+ const version=Number(raw.version)||0, legacy=version<5.13;
+ const field=(value,min,max,fallback,label)=>{if(value===undefined||value===null||value==='') {if(legacy)return fallback;throw Error(`Backup non valido: manca ${label}`)} const n=parseValidNumber(value,min,max);if(!Number.isFinite(n))throw Error(`Backup non valido: ${label} fuori intervallo`);return n;};
+ const targetRaw=s.targetKcal??s.target;
+ const target=targetRaw===undefined||targetRaw===null||targetRaw===''?null:field(targetRaw,500,10000,null,'obiettivo');
+ const out={version:5.19,pantry:[],settings:{...defaults.settings,...s,age:field(s.age,13,110,30,'età'),weight:field(s.weight,25,350,70,'peso'),height:field(s.height,100,250,175,'altezza'),target,targetEdited:typeof s.targetEdited==='boolean'?s.targetEdited:(target!==null&&target!==2000),gender:s.gender==='female'?'female':'male'},days:{}};
+ const pantry=Array.isArray(raw.pantry)?raw.pantry:[];
+ out.pantry=pantry.filter(x=>x&&typeof x==='object'&&!Array.isArray(x)).map((f,i)=>({name:String(f.name||`Alimento ${i+1}`),k:field(f.k,1,1000,1,`calorie Dispensa ${i+1}`),c:parseValidNumber(f.c,0,2000,{allowBlank:true}),p:parseValidNumber(f.p,0,2000,{allowBlank:true}),f:parseValidNumber(f.f,0,2000,{allowBlank:true})})).map(f=>({...f,c:f.c===null?'':f.c,p:f.p===null?'':f.p,f:f.f===null?'':f.f}));
+ for(const [date,o] of Object.entries(sourceDays)){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!o||typeof o!=='object'||Array.isArray(o))continue;
+  const sourceFoods=Array.isArray(o.foods)?o.foods:[];
+  const dayFoods=sourceFoods.filter(f=>f&&typeof f==='object'&&!Array.isArray(f)).map((f,i)=>{
+   const k=parseValidNumber(f.k??f.kcal,0,15000);if(!Number.isFinite(k))throw Error(`Backup non valido: calorie alimento ${i+1} (${date})`);
+   const macro=x=>{const n=parseValidNumber(x,0,2000,{allowBlank:true});if(Number.isNaN(n))throw Error(`Backup non valido: macro alimento ${i+1} (${date})`);return n===null?'':n};
+   return {id:String(f.id||`${date}_${i}`),name:String(f.name||'Alimento'),k,c:macro(f.c),p:macro(f.p),f:macro(f.f),qty:f.qty??''};
+  });
+  const sourceActivities=Array.isArray(o.activities)?o.activities:[];
+  const activities=sourceActivities.filter(a=>a&&typeof a==='object'&&!Array.isArray(a)).map((a,i)=>({id:String(a.id||`${date}_act_${i}`),name:String(a.name||a.label||'Attività'),kcal:field(a.kcal??a.calories,0,5000,0,`attività ${date}`)}));
+  const legacyWorkout=parseValidNumber(o.workoutKcal??o.burn?.workoutKcal,0,30000);
+  if(!activities.length&&Number.isFinite(legacyWorkout)&&legacyWorkout>0)activities.push({id:`${date}_legacy_activity`,name:'Attività precedente',kcal:legacyWorkout});
+  const rawSteps=o.totalSteps??o.steps??o.burn?.totalSteps??'';
+  const steps=rawSteps===''||rawSteps===null||rawSteps===undefined?'':parseValidNumber(rawSteps,0,100000);
+  if(steps!==''&&!Number.isFinite(steps))throw Error(`Backup non valido: passi (${date})`);
+  const saved=o.saved===true;
+  const bmrSnapshot=validSnapshot(o.bmrSnapshot,500,5000)?o.bmrSnapshot:null;
+  const tdeeSnapshot=validSnapshot(o.tdeeSnapshot,500,50000)?o.tdeeSnapshot:null;
+  out.days[date]={...blank(),...o,version:5.19,saved,foods:dayFoods,activities,totalSteps:steps===''?'':String(Math.round(steps)),workoutKcal:activities.reduce((sum,a)=>sum+a.kcal,0),bmrSnapshot,tdeeSnapshot};
+ }
+ return out;
+}
+
+function load(){
+ try{
+  const raw=localStorage.getItem(STORE);
+  if(raw) db=upgrade(JSON.parse(raw));
+ }catch(e){
+  console.warn('Caricamento dati non riuscito, uso stato di default protetto:', e);
+ }
+}
+
+function persist(){
+ if(!loadSafeToPersist){console.warn('Salvataggio bloccato per proteggere dati locali non leggibili.');return false;}
+ try{
+  db.version=5.19;
+  if(!db.settings||typeof db.settings!=='object'||Array.isArray(db.settings))db.settings={...defaults.settings};
+  db.settings.targetKcal=db.settings.target;
+  db.settings.activity=1.2;
+  if(!db.days||typeof db.days!=='object'||Array.isArray(db.days))db.days={};
+  for(const d of Object.values(db.days)){
+   if(!d||typeof d!=='object'||Array.isArray(d))continue;
+   d.activities=Array.isArray(d.activities)?d.activities.filter(a=>a&&typeof a==='object').map((a,i)=>({id:String(a.id||`act_${i}`),name:String(a.name||'Attività'),kcal:Math.max(0,safeNumber(a.kcal,0))})):[];
+   const activityTotal=d.activities.reduce((sum,a)=>sum+a.kcal,0);
+   d.workoutKcal=d.activities.length?activityTotal:Math.max(0,safeNumber(d.workoutKcal,0));
+   const steps=d.totalSteps;
+   d.totalSteps=steps===''||steps===null||steps===undefined?'':String(Math.max(0,Math.min(100000,Math.round(safeNumber(steps,0)))));
+   d.version=5.19;
+  }
+  localStorage.setItem(STORE,JSON.stringify(db));
+  return true;
+ }catch(e){
+  console.error('Salvataggio locale fallito:', e);
+  alert('Attenzione: impossibile salvare i dati localmente (memoria piena o bloccata).');
+  return false;
+ }
+}
+
+function current(){if(!db.days[activeDay])db.days[activeDay]=blank();return db.days[activeDay]}
+function macro0(v){return v===''||v===null||v===undefined?0:Math.max(0,val(v,0))}
+function totals(d=current()){return d.foods.reduce((a,f)=>({k:a.k+macro0(f.k),c:a.c+macro0(f.c),p:a.p+macro0(f.p),f:a.f+macro0(f.f)}),{k:0,c:0,p:0,f:0});}
+
+function tefInfo(d=current()){
+ let kcal=0,known=0,complete=true,fieldCount=0;
+ const fields=[['c',4*0.075],['p',4*0.225],['f',9*0.025]];
+ for(const food of (d.foods||[])){
+  for(const [key,rate] of fields){
+   fieldCount++;
+   const raw=food[key];
+   if(raw!==''&&raw!==null&&raw!==undefined&&!(typeof raw==='string'&&raw.trim()==='')&&Number.isFinite(Number(raw))&&Number(raw)>=0){
+    kcal+=Number(raw)*rate;
+    known++;
+   } else {
+    complete=false;
+   }
+  }
+ }
+ const isComplete=fieldCount===0||complete;
+ return {kcal, usableKcal:kcal, known, complete:isComplete, any:known>0, fieldCount};
+}
+function tef(d=current()){return tefInfo(d).usableKcal;}
+
+function bmrEstimate(){
+ const age=parseValidNumber($('age').value,13,110),w=parseValidNumber($('weight').value,25,350),h=parseValidNumber($('height').value,100,250),gender=$('gender').value;
+ if(!Number.isFinite(age)||!Number.isFinite(w)||!Number.isFinite(h)||!['male','female'].includes(gender))return null;
+ return 10*w+6.25*h-5*age+(gender==='male'?5:-161);
+}
+function activityBand(total){const steps=Math.max(0,safeNumber(total,0));let label='Bassa · pochi passi';if(steps>=10000)label='Alta · giornata molto attiva';else if(steps>=7000)label='Moderata · giornata attiva';else if(steps>=3500)label='Leggera · movimento quotidiano';return {label};}
+function stepExtra(d=current(),totalOverride){
+ const raw=totalOverride===undefined?d.totalSteps:totalOverride,total=raw===''||raw===null||raw===undefined?0:parseValidNumber(raw,0,100000),weight=parseValidNumber($('weight').value,25,350);
+ if(!Number.isFinite(total)||!Number.isFinite(weight))return {total:0,extra:0,kcal:null,band:activityBand(0)};
+ const band=activityBand(total),kcal=total*weight*0.00035;
+ return {total,extra:total,kcal,band}
+}
+function activityKcal(d=current()){if(Array.isArray(d.activities)&&d.activities.length)return d.activities.reduce((sum,a)=>sum+Math.max(0,safeNumber(a?.kcal,0)),0);return Math.max(0,safeNumber(d.workoutKcal,0))}
+
+function activeBmr(d=current()){if(d.saved)return validSnapshot(d.bmrSnapshot,500,5000)?d.bmrSnapshot:null;return bmrEstimate();}
+function expenditure(d=current()){if(d.saved)return validSnapshot(d.tdeeSnapshot,500,50000)?d.tdeeSnapshot:null;const bmr=activeBmr(d),steps=stepExtra(d).kcal,ti=tefInfo(d);if(!Number.isFinite(bmr)||!Number.isFinite(steps))return null;return bmr+steps+activityKcal(d)+ti.usableKcal;}
+function dayEditable(d=current()){if(!d.saved)return true;if(!confirm('Questa giornata è salvata nello storico. Vuoi sbloccarla e modificarla?'))return false;d.saved=false;d.bmrSnapshot=null;d.tdeeSnapshot=null;persist();return true;}
+function saveProfile(){
+ const age=parseValidNumber($('age').value,13,110),weight=parseValidNumber($('weight').value,25,350),height=parseValidNumber($('height').value,100,250),target=parseValidNumber($('target').value,500,10000);
+ if(![age,weight,height,target].every(Number.isFinite)){alert('Controlla età (13-110), peso (25-350 kg), altezza e obiettivo.');return false;}
+ db.settings={...db.settings,age,weight,height,gender:$('gender').value,target,targetEdited:true};
+ if(persist()) { render(); return true; }
+ return false;
+}
+
+function renderFoods(){
+ const box=$('foodList');box.replaceChildren();const d=current(),fs=d.foods||[],acts=d.activities||[];
+ if(!fs.length&&!acts.length){box.innerHTML='<div class="empty">Nessun alimento o movimento aggiunto per oggi.</div>';return;}
+ fs.forEach((f,i)=>{
+  const row=document.createElement('div');row.className='foodrow';
+  const left=document.createElement('div');const strong=document.createElement('strong');strong.textContent=f.name+(f.qty?` (${f.qty} g)`: '');
+  const small=document.createElement('small');const macros=[];if(f.c!==''&&f.c!=null)macros.push(`C ${macro0(f.c)} g`);if(f.p!==''&&f.p!=null)macros.push(`P ${macro0(f.p)} g`);if(f.f!==''&&f.f!=null)macros.push(`G ${macro0(f.f)} g`);small.textContent=macros.join(' · ')||'Calorie dirette';left.append(strong,small);
+  const right=document.createElement('div');right.className='foodright';const kcal=document.createElement('b');kcal.textContent=`${fmt(f.k)} kcal`;
+  const del=document.createElement('button');del.className='iconbtn';del.textContent='×';del.onclick=()=>{const day=current();if(!dayEditable(day))return;day.foods.splice(i,1);persist();render()};
+  right.append(kcal,del);row.append(left,right);box.append(row);
+ });
+ acts.forEach((a,i)=>{
+  const row=document.createElement('div');row.className='foodrow';
+  const left=document.createElement('div');const strong=document.createElement('strong');strong.textContent='🏃 '+a.name;const small=document.createElement('small');small.textContent='Attività fisica · calorie attive';left.append(strong,small);
+  const right=document.createElement('div');right.className='foodright';const kcal=document.createElement('b');kcal.textContent=`−${fmt(a.kcal)} kcal`;kcal.style.color='var(--green)';
+  const del=document.createElement('button');del.className='iconbtn';del.textContent='×';del.onclick=()=>{const day=current();if(!dayEditable(day))return;day.activities.splice(i,1);day.workoutKcal=day.activities.reduce((sum,item)=>sum+val(item.kcal),0);persist();render()};
+  right.append(kcal,del);row.append(left,right);box.append(row);
+ });
+}
+function renderPantry(){
+ const box=$('pantryList');box.replaceChildren();if(!db.pantry.length){box.innerHTML='<div class="empty">La Dispensa è vuota. Aggiungi i tuoi alimenti abituali.</div>';return;}
+ db.pantry.forEach((f,i)=>{
+  const row=document.createElement('div');row.className='foodrow';const left=document.createElement('div');const name=document.createElement('strong');name.textContent=f.name;const sub=document.createElement('small');sub.textContent=`C ${f.c||0} g · P ${f.p||0} g · G ${f.f||0} g per 100 g`;left.append(name,sub);
+  const right=document.createElement('div');right.className='foodright';const k=document.createElement('b');k.textContent=`${f.k} kcal`;
+  const del=document.createElement('button');del.className='iconbtn';del.textContent='×';del.onclick=()=>{if(!confirm('Eliminare questo alimento dalla Dispensa?'))return;db.pantry.splice(i,1);persist();renderPantry()};
+  right.append(k,del);row.append(left,right);box.append(row);
+ });
+}
+function renderHistory(){
+ const box=$('historyList');box.replaceChildren();
+ const from=$('historyFrom').value,to=$('historyTo').value;
+ const keys=Object.keys(db.days).filter(k=>db.days[k].saved&&(!from||k>=from)&&(!to||k<=to)).sort().reverse();
+ let total=0,count=0;keys.forEach(k=>{const d=db.days[k],intake=totals(d).k,tdee=validSnapshot(d.tdeeSnapshot,500,50000)?Number(d.tdeeSnapshot):null;if(tdee!==null){total+=intake-tdee;count++}});
+ const totalEl=$('historyTotal');totalEl.textContent=count?`${total>0?'+':total<0?'−':'±'}${fmt(Math.abs(total))} kcal`:'— kcal';totalEl.classList.toggle('surplus',total>0);
+ $('historyAverage').textContent=count?`Media giornaliera: ${total/count>0?'+':total/count<0?'−':'±'}${fmt(Math.abs(total/count))} kcal/giorno su ${count} giorni`:'Nessun saldo calcolabile nel periodo';
+ $('historyEmpty').classList.toggle('hidden',keys.length>0);
+ keys.forEach(k=>{
+  const d=db.days[k],intake=totals(d).k,tdee=validSnapshot(d.tdeeSnapshot,500,50000)?Number(d.tdeeSnapshot):null,delta=tdee===null?null:intake-tdee;
+  const row=document.createElement('button');row.className='historyrow';
+  const date=document.createElement('span');date.className='histdate';date.textContent=new Date(k+'T12:00:00').toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  const numbers=document.createElement('span');numbers.className='histnumbers';numbers.textContent=`Assunte ${fmt(intake)} · TDEE ${tdee===null?'—':fmt(tdee)}`;
+  const badge=document.createElement('span');badge.className='histbadge '+(delta===null?'balance':delta<0?'deficit':delta>0?'surplus':'balance');badge.textContent=delta===null?'N/D':delta<0?'Deficit':delta>0?'Surplus':'Equilibrio';
+  const arrow=document.createElement('span');arrow.className='arrow';arrow.textContent='›';
+  row.append(date,numbers,badge,arrow);row.onclick=()=>{activeDay=k;showView('home');render()};box.append(row);
+ });
+}
+
+function render(){
+ const d=current(),t=totals(d),tdee=expenditure(d),target=parseValidNumber($('target').value,500,10000),activity=activityKcal(d),steps=stepExtra(d),ti=tefInfo(d);
+ const bmr=activeBmr(d),validEnergy=Number.isFinite(tdee)&&Number.isFinite(bmr)&&Number.isFinite(target);
+ $('bmrDisplay').textContent=Number.isFinite(bmr)?fmt(bmr):'—';
+ const delta=validEnergy?t.k-tdee:null, remaining=Number.isFinite(target)?target-t.k:null;
+ $('intake').textContent=fmt(t.k);
+ $('burnNum').textContent=Number.isFinite(tdee)?fmt(tdee):'—';
+ $('targetNum').innerHTML=`${Number.isFinite(target)?fmt(target):'—'} <small>kcal</small>`;
+ $('remaining').textContent=remaining===null?'—':remaining>=0?fmt(remaining):`+${fmt(-remaining)}`;
+ $('remainingLabel').textContent=remaining===null?'obiettivo non valido':remaining>=0?'kcal al target':'kcal oltre target';
+ const deltaEl=$('balanceDelta');
+ deltaEl.textContent=delta===null?'Bilancio non disponibile':`${delta>0?'+':delta<0?'−':'±'}${fmt(Math.abs(delta))} kcal`;
+ deltaEl.classList.toggle('deficit',delta!==null&&delta<0);
+ deltaEl.classList.toggle('surplus',delta!==null&&delta>0);
+ $('balanceSub').textContent=delta===null?'Snapshot o dati energetici mancanti':delta===0?'Assunzione pari alla spesa TDEE':delta<0?'Deficit calorico reale':'Surplus calorico reale';
+ const marker=$('balanceMarker'),offset=delta===null?0:Math.max(-48,Math.min(48,delta/Math.max(1,Math.max(t.k,tdee,1000))*48));
+ marker.style.left=`${50+offset}%`;
+ marker.classList.toggle('deficit',delta<0);
+ marker.classList.toggle('surplus',delta>0);
+ $('tefNum').innerHTML=`${fmt(ti.kcal)} <small>kcal</small>`;
+ $('balanceNum').textContent=delta===null?'—':`${delta>0?'+':delta<0?'−':'±'}${fmt(Math.abs(delta))} kcal`;
+ $('balanceHint').textContent=`BMR (${Number.isFinite(bmr)?fmt(bmr):'—'}) + passi (${Number.isFinite(steps.kcal)?fmt(steps.kcal):'—'}) + allenamento (${fmt(activity)}) + TEF (${ti.complete?fmt(ti.usableKcal):'parziale'}).`;
+ $('macro').textContent=`C ${fmt(t.c)} g · P ${fmt(t.p)} g · G ${fmt(t.f)} g · Passi ${fmt(steps.total)}`;
+ $('activityLevel').textContent=`${steps.band.label} · ${Number.isFinite(steps.kcal)?'circa '+fmt(steps.kcal)+' kcal':'stima n/d'}`;
+ const homeSteps=$('homeSteps');if(document.activeElement!==homeSteps)homeSteps.value=d.totalSteps||'';
+ $('day').value=activeDay;
+ const dateObj=new Date(activeDay+'T12:00:00');
+ $('dayLabelSub').textContent=dateObj.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+ $('dayStatusPill').textContent = d.saved ? 'SALVATO' : 'OFFLINE';
+ renderFoods();renderHistory();renderPantry();
+}
+
+function toast(s){$('toast').textContent=s;$('toast').classList.add('visible');setTimeout(()=>$('toast').classList.remove('visible'),1600)}
+function openAction(){$('actionSheet').classList.add('open');$('sheetShade').classList.add('open')}
+function closeAction(){$('actionSheet').classList.remove('open');$('sheetShade').classList.remove('open')}
+function openModal(id){closeAllModals();$(id).classList.add('open');$('modalShade').classList.add('open')}
+function toggleInfo(infoId,buttonId){const info=$(infoId),button=$(buttonId),opening=info.classList.contains('hidden');info.classList.toggle('hidden');button.setAttribute('aria-expanded',String(opening));}
+function closeAllModals(){['foodModal','quantityModal','pantryAddModal','genericModal','activityModal','stepsModal'].forEach(id=>$(id).classList.remove('open'));$('modalShade').classList.remove('open')}
+function showView(v){document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`view-${v}`));document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));if(v==='history')renderHistory();if(v==='pantry')renderPantry();if(v==='home')renderFoods()}
+
+function renderFoodChoices(){
+ const q=$('foodSearch').value.toLowerCase().trim(),box=$('foodChoices');box.replaceChildren();
+ const all=[...db.pantry.map(f=>({...f,source:'Dispensa'})),...foods.map(f=>({...f,source:'Database'}))];
+ all.filter(f=>f.name.toLowerCase().includes(q)).forEach(f=>{
+  const b=document.createElement('button');b.className='suggestion';
+  const span=document.createElement('span');const strong=document.createElement('strong');strong.textContent=(f.source==='Dispensa'?'🏪 ':'')+f.name;
+  const small=document.createElement('small');small.textContent=`${f.source} · 100g`;span.append(strong,small);
+  const kcal=document.createElement('b');kcal.textContent=`${f.k} kcal`;b.append(span,kcal);
+  b.onclick=()=>{selectedFood=f;closeAllModals();$('quantTitle').textContent=f.name;$('quantSub').textContent=`${f.k} kcal per 100 g.`;$('quantInput').value='100';openModal('quantityModal');$('quantInput').focus()};
+  box.append(b);
+ });
+ if(!box.children.length)box.innerHTML='<div class="empty">Nessun risultato. Puoi usare Cibo generico.</div>';
+}
+
+load();if(!db.days[activeDay])db.days[activeDay]=blank();
+$('age').value=Number.isFinite(Number(db.settings.age))?db.settings.age:30;$('weight').value=Number.isFinite(Number(db.settings.weight))?db.settings.weight:70;$('height').value=Number.isFinite(Number(db.settings.height))?db.settings.height:175;$('gender').value=db.settings.gender==='female'?'female':'male';
+$('target').value=(db.settings.targetEdited&&Number.isFinite(Number(db.settings.target))&&Number(db.settings.target)>=500&&Number(db.settings.target)<=10000)?db.settings.target:2000;db.settings.target=Number($('target').value);let lastValidTarget=Number($('target').value);
+
+['age','weight','height','gender'].forEach(id=>$(id).addEventListener('input',()=>{const age=parseValidNumber($('age').value,13,110),weight=parseValidNumber($('weight').value,25,350),height=parseValidNumber($('height').value,100,250);if(![age,weight,height].every(Number.isFinite))return;db.settings={...db.settings,age,weight,height,gender:$('gender').value};persist();render()}));
+document.querySelectorAll('[data-step]').forEach(button=>button.addEventListener('click',()=>{
+ const id=button.dataset.step,input=$(id),delta=Number(button.dataset.delta),min=Number(input.min),max=Number(input.max),step=id==='weight'?0.5:1;
+ let value=Number(input.value);if(!Number.isFinite(value)||value===0)value=id==='weight'?Number($('weight').value):id==='age'?Number($('age').value):Number($('height').value);
+ value=Math.min(max,Math.max(min,Math.round((value+delta)/step)*step));
+ input.value=id==='weight'?value.toFixed(1):String(value);
+ input.dispatchEvent(new Event('input',{bubbles:true}));
+}));
+
+function validateTargetInput({restore=false}={}){
+ const input=$('target'),target=parseValidNumber(input.value,500,10000),valid=Number.isFinite(target);
+ input.setAttribute('aria-invalid',String(!valid));
+ $('targetValidation').classList.toggle('hidden',valid);
+ if(!valid){if(restore){input.value=String(lastValidTarget);input.setAttribute('aria-invalid','false');$('targetValidation').classList.add('hidden');render();}else render();return false;}
+ lastValidTarget=target;db.settings.target=target;db.settings.targetEdited=true;persist();render();return true;
+}
+$('target').addEventListener('input',()=>validateTargetInput());
+$('target').addEventListener('change',()=>validateTargetInput());
+$('target').addEventListener('blur',()=>{if(!validateTargetInput())validateTargetInput({restore:true})});
+$('day').addEventListener('change',()=>{if($('day').value){activeDay=$('day').value;render()}});
+$('homeSteps').addEventListener('input',()=>{
+ const d=current();if(d.saved){$('homeSteps').value=d.totalSteps||'';return;}
+ const raw=parseValidNumber($('homeSteps').value,0,100000,{allowBlank:true});
+ if(raw===null && $('homeSteps').value.trim()!=='')return;
+ const previous=d.totalSteps;d.totalSteps=raw===null?'':String(Math.round(raw));
+ if(!persist()){d.totalSteps=previous;$('homeSteps').value=previous||'';}
+ render();
+});
+$('addFoodHome').onclick=()=>{const d=current();if(!dayEditable(d))return;openModal('foodModal');$('foodSearch').value='';renderFoodChoices();$('foodSearch').focus()};
+$('addActivityHome').onclick=()=>{const d=current();if(!dayEditable(d))return;openModal('activityModal');$('activityKcal').value='';$('activityName').value=''};
+$('sheetShade').onclick=closeAction;$('modalShade').onclick=closeAllModals;
+$('chooseFood').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;openModal('foodModal');$('foodSearch').value='';renderFoodChoices();$('foodSearch').focus()};
+$('chooseActivity').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;openModal('activityModal');$('activityKcal').value='';$('activityName').value=''};
+$('chooseSteps').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;$('stepsTotal').value=current().totalSteps||'';updateStepsPreview();openModal('stepsModal')};
+$('closeSteps').onclick=()=>{closeAllModals();render()};$('modalShade').addEventListener('click',()=>render());$('foodSearch').addEventListener('input',renderFoodChoices);
+$('closeFood').onclick=closeAllModals;$('closeQuantity').onclick=closeAllModals;$('closePantry').onclick=closeAllModals;$('closeGeneric').onclick=closeAllModals;$('closeActivity').onclick=closeAllModals;
+$('genericOpen').onclick=()=>{openModal('genericModal');$('genericName').focus()};$('openAddPantry').onclick=()=>{openModal('pantryAddModal');$('pantryName').focus()};
+
+$('quantityForm').addEventListener('submit',e=>{e.preventDefault();const grams=parseValidNumber($('quantInput').value,1,5000);if(!selectedFood||!Number.isFinite(grams))return;const d=current();if(!dayEditable(d))return;const r=grams/100;d.foods.push({name:selectedFood.name,qty:grams,k:Math.round(selectedFood.k*r),c:selectedFood.c!==''?Math.round(num(selectedFood.c)*r*10)/10:'',p:selectedFood.p!==''?Math.round(num(selectedFood.p)*r*10)/10:'',f:selectedFood.f!==''?Math.round(num(selectedFood.f)*r*10)/10:''});if(!persist()){d.foods.pop();return;}closeAllModals();render();toast('Cibo aggiunto')});
+$('genericForm').addEventListener('submit',e=>{e.preventDefault();const name=$('genericName').value.trim(),k=parseValidNumber($('genericKcal').value,1,15000);if(!name||!Number.isFinite(k))return;const macroValue=id=>{const raw=$(id).value;if(raw.trim()==='')return '';const n=parseValidNumber(raw,0,2000);return Number.isFinite(n)?n:NaN};const macros=[macroValue('genericC'),macroValue('genericP'),macroValue('genericF')];if(macros.some(Number.isNaN)){alert('Controlla i macro.');return;}const d=current();if(!dayEditable(d))return;d.foods.push({name,k,c:macros[0],p:macros[1],f:macros[2]});if(!persist()){d.foods.pop();return;}$('genericForm').reset();closeAllModals();render();toast('Cibo aggiunto')});
+$('pantryForm').addEventListener('submit',e=>{e.preventDefault();const name=$('pantryName').value.trim(),k=parseValidNumber($('pantryKcal').value,1,1000),macro=id=>{const raw=$(id).value;if(raw.trim()==='')return '';const n=parseValidNumber(raw,0,2000);return Number.isFinite(n)?n:NaN;},c=macro('pantryC'),pr=macro('pantryP'),f=macro('pantryF');if(!name||!Number.isFinite(k)||[c,pr,f].some(Number.isNaN)){alert('Controlla i valori.');return;}db.pantry.unshift({name,k,c,p:pr,f});if(!persist()){db.pantry.shift();return;}$('pantryForm').reset();closeAllModals();renderPantry();toast('Salvato in Dispensa')});
+
+function updateStepsPreview(){const d=current(),steps=stepExtra(d,$('stepsTotal').value),base=bmrEstimate(),active=activityKcal(d),ti=tefInfo(d),foodTef=ti.usableKcal,burn=Number.isFinite(base)&&Number.isFinite(steps.kcal)?base+active+steps.kcal+foodTef:null;$('stepsPreview').textContent=`${steps.band.label} · ${fmt(steps.total)} passi · stima: ${fmt(steps.kcal)} kcal.`;$('burnNum').textContent=Number.isFinite(burn)?fmt(burn):'—';}
+$('stepsTotal').addEventListener('input',updateStepsPreview);
+$('stepsForm').addEventListener('submit',e=>{e.preventDefault();const total=parseValidNumber($('stepsTotal').value,0,100000);if(!Number.isFinite(total))return;const d=current();if(!dayEditable(d))return;const previous=d.totalSteps;d.totalSteps=String(Math.round(total));if(!persist()){d.totalSteps=previous;return;}$('homeSteps').value=d.totalSteps;closeAllModals();render();toast('Passi registrati')});
+$('activityForm').addEventListener('submit',e=>{e.preventDefault();const kcal=parseValidNumber($('activityKcal').value,1,5000);if(!Number.isFinite(kcal))return;const d=current();if(!dayEditable(d))return;if(!Array.isArray(d.activities))d.activities=[];d.activities.push({id:`act_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:$('activityName').value.trim()||'Attività',kcal:Math.round(kcal)});d.workoutKcal=d.activities.reduce((sum,a)=>sum+val(a.kcal),0);if(!persist()){d.activities.pop();d.workoutKcal=d.activities.reduce((sum,a)=>sum+val(a.kcal),0);return;}closeAllModals();render();toast('Movimento registrato')});
+
+$('saveDay').onclick=()=>{
+ const d=current();const bmr=bmrEstimate(),steps=stepExtra(d).kcal,ti=tefInfo(d);
+ if(!Number.isFinite(bmr)||!Number.isFinite(steps)){alert('Impossibile salvare: dati non validi.');return;}
+ const previous={saved:d.saved,bmrSnapshot:d.bmrSnapshot,tdeeSnapshot:d.tdeeSnapshot};
+ d.bmrSnapshot=bmr;d.tdeeSnapshot=bmr+steps+activityKcal(d)+ti.usableKcal;d.saved=true;
+ if(persist()) { render(); renderHistory(); toast('Giornata salvata nello storico!'); }
+ else {Object.assign(d,previous);render();}
+};
+$('resetDay').onclick=()=>{if(confirm('Azzero i dati della giornata selezionata?')){const previous=db.days[activeDay];db.days[activeDay]=blank();if(persist()){render();toast('Giornata azzerata')}else{db.days[activeDay]=previous;render()}}};
+$('saveProfile').onclick=()=>{if(saveProfile())toast('Profilo aggiornato')};
+$('bmrInfoToggle').onclick=()=>toggleInfo('bmrInfo','bmrInfoToggle');
+$('targetInfoToggle').onclick=()=>toggleInfo('targetInfo','targetInfoToggle');
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+$('historyFrom').value=today();$('historyTo').value=today();
+$('historyFrom').addEventListener('change',renderHistory);$('historyTo').addEventListener('change',renderHistory);
+document.querySelectorAll('[data-history-range]').forEach(btn=>btn.onclick=()=>{const range=btn.dataset.historyRange;if(range==='all'){$('historyFrom').value='';$('historyTo').value='';}else{const end=new Date(),start=new Date();start.setDate(start.getDate()-Number(range)+1);const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('historyFrom').value=iso(start);$('historyTo').value=iso(end);}renderHistory()});
+
+$('export').onclick=async()=>{
+ try{
+  if(!persist())return;const json=JSON.stringify(db,null,2);const filename='backup-bilancio-calorico-v5.19.json';
+  if(navigator.share&&navigator.canShare){try{const file=new File([json],filename,{type:'application/json'});if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Backup Bilancio Calorico'});toast('Backup condiviso');return;}}catch(_){}}
+  const blob=new Blob([json],{type:'application/json;charset=utf-8'});let url='';try{url=URL.createObjectURL(blob)}catch(_){}
+  const a=document.createElement('a');a.href=url||`data:application/json;charset=utf-8,${encodeURIComponent(json)}`;a.download=filename;a.rel='noopener';a.style.display='none';
+  document.body.appendChild(a);a.click();a.remove();if(url)setTimeout(()=>URL.revokeObjectURL(url),30000);toast('Esportazione avviata');
+ }catch(err){if(err&&err.name==='AbortError'){toast('Annullato');return;}alert('Errore esportazione');}
+};
+
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{
+ const file=e.target.files[0];
+ if(!file) return;
+ try{
+  const imported=upgrade(JSON.parse(await file.text()));
+  if(!confirm('Importare backup? I dati attuali saranno sostituiti.'))return;
+  const previous=db;db=imported;
+  if(!db.days[activeDay]) db.days[activeDay]=blank();
+  if(!persist()){db=previous;render();return;}
+  render();
+  toast('Backup importato');
+ }catch(err){
+  alert('Backup non valido: '+err.message);
+ }finally{
+  $('importFile').value='';
+ }
+};
+
+render();if(loadSafeToPersist)persist();
+})();
+</script>
+</body>
+</html>
