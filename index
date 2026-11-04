@@ -57,7 +57,7 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
 .top h1{font-size: 24px; letter-spacing: -.03em; margin: 4px 0 0; font-weight: 900; text-transform: uppercase; color: var(--cyan); text-shadow: 2px 2px 0px #000;}
 
 .dateinput-wrap{
-  background: var(--cyan);
+  background: var(--panel);
   border: var(--border);
   border-radius: var(--radius);
   padding: 6px 10px;
@@ -66,29 +66,41 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
 .dateinput{
   background: transparent;
   border: 0;
-  color: var(--text-dark);
+  color: var(--text);
   font-size: 13px;
   font-weight: 900;
-  color-scheme: light;
+  color-scheme: dark;
   outline: none;
   cursor: pointer;
 }
 
-.profile{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-bottom:14px}
+/* Griglia Profilo Dedicata */
+.profile-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px}
 .profileitem{
   background: var(--panel);
   border: var(--border);
   border-radius: var(--radius);
-  padding: 8px 4px;
+  padding: 12px 10px;
   box-shadow: var(--retro-shadow);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  box-sizing: border-box;
-  min-width: 0;
-  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.profileitem label{display:block; font-size:9px; color: var(--cyan); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; font-weight:900; text-align:center}
-.profileitem select{width:100%; background:transparent; border:0; color:var(--text); padding:0; outline:none; font-weight:900; font-size:14px; text-align:center; color-scheme:dark}
+.profileitem label{display:block; font-size:10px; color: var(--cyan); text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; font-weight:900; text-align:center}
+
+/* Stile unificato per il selettore Sesso */
+.profileitem select{
+  width:100%;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  padding: 6px 2px;
+  outline: none;
+  font-weight: 900;
+  font-size: 16px;
+  text-align-last: center;
+  color-scheme: dark;
+}
 .profileitem select option{background:var(--panel); color: #fff;}
 
 .stepper{
@@ -96,64 +108,75 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
   align-items:center; 
   justify-content:space-between; 
   width:100%; 
-  gap:2px;
-  box-sizing: border-box;
-  min-width: 0;
-  overflow: visible;
+  gap:6px;
 }
 .stepper button{
-  flex:0 0 22px; width:22px; height:24px; padding:0;
+  flex:0 0 32px; width:32px; height:32px; padding:0;
   border: 2px solid #000;
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--magenta);
   color: #fff;
   font-weight: 900;
+  font-size: 16px;
   display: grid;
   place-items: center;
-  box-shadow: 1px 1px 0px #000;
+  box-shadow: 2px 2px 0px #000;
 }
 .stepper button:active{transform: translate(1px, 1px); box-shadow:none}
 
-/* Regole aggiornate per correggere la visibilità dei numeri */
 .profileitem input,
 .stepper input {
   box-sizing: border-box;
   width: 100%;
-  min-width: 0;
-  max-width: 100%;
   padding: 6px 2px;
   text-align: center;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip;
   border: 0;
   background: transparent;
   color: var(--text);
   font-weight: 900;
-  font-size: 14px;
+  font-size: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
 }
-.stepper input {
-  flex: 1;
-  font-size: 13px;
+.stepper input::-webkit-inner-spin-button,
+.stepper input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .targetbox{
-  grid-column: span 4;
   display: grid;
   grid-template-columns: minmax(0,1fr) auto;
   align-items: center;
   gap: 10px 14px;
-  padding: 12px 14px;
+  padding: 14px;
   background: var(--panel);
   border: var(--border);
   border-radius: var(--radius);
   box-shadow: var(--retro-shadow);
+  margin-bottom: 12px;
 }
 .targetbox .box-title{font-size: 11px; color: var(--text); font-weight: 900; text-transform: uppercase}
 .targetbox .box-value{display:flex; align-items:center; justify-content:flex-end; gap:6px}
-.targetbox .value-number{color: var(--green); font-size: 18px; font-weight: 900}
-.targetbox input{background:transparent; border:0; color:var(--green); font-size:18px; font-weight:900; width:85px; text-align:right; outline:none; padding:0}
+
+/* Cifre perfettamente omogenee tra BMR e Target */
+.targetbox .value-number,
+.targetbox input {
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'Space Grotesk', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.targetbox input{
+  background:transparent;
+  border:0;
+  width:85px;
+  text-align:right;
+  outline:none;
+  padding:0;
+}
 .targetbox input[aria-invalid="true"]{color:var(--yellow); text-decoration:underline wavy var(--yellow)}
 .targetbox .target-units{color:var(--cyan); font-size:11px; font-weight:900}
 
@@ -207,6 +230,11 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
   width:105px; background:#fff; border: 2px solid #000; border-radius: 6px;
   color:var(--text-dark); font-size:18px; font-weight:900; text-align:center; padding:6px 4px;
   box-shadow: 2px 2px 0px #000;
+}
+.steps-input input::-webkit-inner-spin-button,
+.steps-input input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .steps-input span{font-size:14px; color:var(--text-dark); font-weight:900}
 
@@ -329,7 +357,7 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
 .history-average{font-size:12px; color:#000; font-weight:900}
 .date-range{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .date-range label{font-size:9px; color:var(--cyan); display:grid; gap:4px; font-weight:900; text-transform:uppercase}
-.history-date{width:100%; border:var(--border); border-radius:6px; padding:10px; background:#fff; color:#000; font:inherit; color-scheme:light; font-weight:900}
+.history-date{width:100%; border:var(--border); border-radius:6px; padding:10px; background:var(--panel); color:var(--text); font:inherit; color-scheme:dark; font-weight:900}
 .history-chips{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
 .history-chips .btn{width:auto; border-radius:99px; padding:6px 12px; font-size:10px; font-weight:900; background:#fff; color:#000}
 
@@ -338,7 +366,6 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
   line-height:1.4; text-align:left; margin:0 0 14px; background: var(--panel);
   border: var(--border); color: var(--cyan); font-weight:900;
 }
-.settingsgrid{display:grid; grid-template-columns:1fr 1fr; gap:8px}
 
 .nav{
   position:fixed; z-index:20; bottom:0; left:0; right:0;
@@ -402,28 +429,8 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
   <div class="dateinput-wrap"><input class="dateinput" id="day" type="date" aria-label="Seleziona giornata"></div>
 </header>
 
+<!-- 1. HOME — SOLO MONITORAGGIO GIORNALIERO -->
 <section class="view active" id="view-home">
-<section class="profile" aria-label="Profilo e obiettivo">
-<div class="profileitem"><label for="age">Età</label><input id="age" type="number" min="13" max="110" value="30"></div>
-<div class="profileitem"><label for="weight">Peso · kg</label><div class="stepper"><button type="button" data-step="weight" data-delta="-0.5" aria-label="Riduci peso">−</button><input id="weight" type="number" min="25" max="350" step="0.5" value="70"><button type="button" data-step="weight" data-delta="0.5" aria-label="Aumenta peso">+</button></div></div>
-<div class="profileitem"><label for="height">Altezza · cm</label><div class="stepper"><button type="button" data-step="height" data-delta="-1" aria-label="Riduci altezza">−</button><input id="height" type="number" min="100" max="250" step="1" value="175"><button type="button" data-step="height" data-delta="1" aria-label="Aumenta altezza">+</button></div></div>
-<div class="profileitem"><label for="gender">Sesso</label><select id="gender"><option value="male">Uomo</option><option value="female">Donna</option></select></div>
-
-<!-- BMR Box -->
-<div class="targetbox" id="bmrBox">
-  <div><span class="box-title">Metabolismo basale (BMR)</span></div>
-  <div class="box-value"><span id="bmrDisplay" class="value-number">1.500</span><span class="target-units">kcal</span><button type="button" class="info-toggle" id="bmrInfoToggle" aria-label="Spiegazione del metabolismo basale" aria-expanded="false" aria-controls="bmrInfo">i</button></div>
-  <div id="bmrInfo" class="tefbox hidden"><strong>Come si calcola il BMR?</strong> Stima a riposo con formula Mifflin–St Jeor. Non comprende passi o allenamenti.</div>
-</div>
-
-<div class="targetbox" id="targetBox">
-  <div><label class="box-title" for="target">Obiettivo calorico giornaliero</label></div>
-  <div class="box-value"><input id="target" type="number" min="500" max="10000" step="1" value="2000" inputmode="numeric" aria-describedby="targetInfo targetValidation"><span class="target-units">kcal</span><button type="button" class="info-toggle" id="targetInfoToggle" aria-label="Spiegazione dell'obiettivo calorico" aria-expanded="false" aria-controls="targetInfo">i</button></div>
-  <div id="targetInfo" class="tefbox hidden"><strong>Come funziona il target?</strong> Il tuo obiettivo di assunzione calorica giornaliera, impostato manualmente.</div>
-  <div id="targetValidation" class="validation-note hidden" role="status" aria-live="polite">Valore consentito: 500 – 10.000 kcal.</div>
-</div>
-</section>
-
 <section class="steps-top" aria-label="Attività giornaliera">
   <div><label for="homeSteps">I tuoi passi oggi</label><div class="hint" id="activityLevel">Stima del consumo da camminata</div></div>
   <div class="steps-input"><input id="homeSteps" type="number" min="0" max="100000" step="1" inputmode="numeric" placeholder="0" aria-label="Totale passi giornalieri"><span>passi</span></div>
@@ -461,17 +468,52 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
 </div>
 </section>
 
+<!-- 2. DISPENSA -->
 <section class="view" id="view-pantry"><div class="sectionhead"><h2>La tua Dispensa</h2><span class="pill">Cibi personalizzati</span></div><div class="card"><p class="hint" style="color:#fff">Valori nutrizionali per 100 g. Gli alimenti della Dispensa appaiono in cima alla ricerca.</p><button class="btn primary" id="openAddPantry" style="width:100%">＋ Aggiungi alimento</button><div id="pantryList"></div></div></section>
 
+<!-- 3. STORICO -->
 <section class="view" id="view-history"><div class="sectionhead"><h2>Storico & Analisi</h2><span class="pill">Bilancio periodo</span></div>
 <div class="history-hero"><div class="eyebrow">Saldo accumulato del periodo</div><div id="historyTotal" class="history-total">— kcal</div><div id="historyAverage" class="history-average">Seleziona intervallo</div></div>
 <div class="card history-controls"><div class="date-range"><label>Da data<input class="dateinput history-date" type="date" id="historyFrom"></label><label>A data<input class="dateinput history-date" type="date" id="historyTo"></label></div><div class="history-chips"><button class="btn" data-history-range="7">Ultimi 7 giorni</button><button class="btn" data-history-range="28">Ultime 4 settimane</button><button class="btn" data-history-range="all">Tutto</button></div></div>
 <div class="card history-card"><div id="historyList"></div><div class="empty hidden" id="historyEmpty">Nessuna giornata salvata nell’intervallo selezionato.</div></div><div class="foot">Il TEF è stimato dai macro registrati.</div></section>
 
-<section class="view" id="view-settings"><div class="sectionhead"><h2>Profilo / Impostazioni</h2></div><div class="card"><div class="hint" style="color:#fff">BMR stimato con Mifflin–St Jeor. TDEE sommando BMR, passi, attività e TEF.</div><button class="btn primary" id="saveProfile" style="margin-top:12px">Salva dati personali</button></div><div class="sectionhead"><h2>Backup e dati</h2></div><div class="card"><p class="hint" style="color:#fff">Esporta o importa i dati locali (Dispensa, diario e attività).</p><div class="actions"><button class="btn" id="export">Esporta backup JSON</button><button class="btn" id="importBtn">Importa backup</button><input id="importFile" class="hidden" type="file" accept="application/json,.json"></div></div></section><div class="foot">Bilancio Calorico v5.19 · 80S Aerobic Edition</div>
+<!-- 4. PROFILO — GESTIONE COMPLETA DEI PARAMETRI -->
+<section class="view" id="view-settings">
+<div class="sectionhead"><h2>Dati Personali</h2></div>
+<div class="card">
+  <div class="profile-grid">
+    <div class="profileitem"><label for="age">Età</label><div class="stepper"><button type="button" data-step="age" data-delta="-1" aria-label="Riduci età">−</button><input id="age" type="number" min="13" max="110" value="30"><button type="button" data-step="age" data-delta="1" aria-label="Aumenta età">+</button></div></div>
+    <div class="profileitem"><label for="gender">Sesso</label><select id="gender"><option value="male">Uomo</option><option value="female">Donna</option></select></div>
+    <div class="profileitem"><label for="weight">Peso · kg</label><div class="stepper"><button type="button" data-step="weight" data-delta="-0.5" aria-label="Riduci peso">−</button><input id="weight" type="number" min="25" max="350" step="0.5" value="70"><button type="button" data-step="weight" data-delta="0.5" aria-label="Aumenta peso">+</button></div></div>
+    <div class="profileitem"><label for="height">Altezza · cm</label><div class="stepper"><button type="button" data-step="height" data-delta="-1" aria-label="Riduci altezza">−</button><input id="height" type="number" min="100" max="250" step="1" value="175"><button type="button" data-step="height" data-delta="1" aria-label="Aumenta altezza">+</button></div></div>
+  </div>
+
+  <!-- BMR Box integrato nel Profilo -->
+  <div class="targetbox" id="bmrBox">
+    <div><span class="box-title">Metabolismo basale (BMR)</span></div>
+    <div class="box-value"><span id="bmrDisplay" class="value-number">1500</span><span class="target-units">kcal</span><button type="button" class="info-toggle" id="bmrInfoToggle" aria-label="Spiegazione del metabolismo basale" aria-expanded="false" aria-controls="bmrInfo">i</button></div>
+    <div id="bmrInfo" class="tefbox hidden"><strong>Come si calcola il BMR?</strong> Stima a riposo con formula Mifflin–St Jeor. Non comprende passi o allenamenti.</div>
+  </div>
+
+  <!-- Target Box integrato nel Profilo -->
+  <div class="targetbox" id="targetBox">
+    <div><label class="box-title" for="target">Obiettivo calorico giornaliero</label></div>
+    <div class="box-value"><input id="target" type="number" min="500" max="10000" step="1" value="2000" inputmode="numeric" aria-describedby="targetInfo targetValidation"><span class="target-units">kcal</span><button type="button" class="info-toggle" id="targetInfoToggle" aria-label="Spiegazione dell'obiettivo calorico" aria-expanded="false" aria-controls="targetInfo">i</button></div>
+    <div id="targetInfo" class="tefbox hidden"><strong>Come funziona il target?</strong> Il tuo obiettivo di assunzione calorica giornaliera, impostato manualmente.</div>
+    <div id="targetValidation" class="validation-note hidden" role="status" aria-live="polite">Valore consentito: 500 – 10.000 kcal.</div>
+  </div>
+
+  <button class="btn primary" id="saveProfile" style="margin-top:8px">Salva dati personali</button>
+</div>
+
+<div class="sectionhead"><h2>Backup e dati</h2></div>
+<div class="card"><p class="hint" style="color:#fff">Esporta o importa i dati locali (Dispensa, diario e attività).</p><div class="actions"><button class="btn" id="export">Esporta backup JSON</button><button class="btn" id="importBtn">Importa backup</button><input id="importFile" class="hidden" type="file" accept="application/json,.json"></div></div>
+</section>
+
+<div class="foot">Bilancio Calorico v5.19 · 80S Aerobic Edition</div>
 </main>
 
-<nav class="nav"><button class="active" data-view="home"><span aria-hidden="true">🏠</span>Home</button><button data-view="pantry"><span aria-hidden="true">🥗</span>Dispensa</button><button data-view="history"><span aria-hidden="true">📅</span>Storico</button><button data-view="settings"><span aria-hidden="true">⚙️</span>Profilo</button></nav>
+<nav class="nav"><button class="active" data-view="home"><span aria-hidden="true">🏠</span>Home</button><button data-view="pantry"><span aria-hidden="true">🏪</span>Dispensa</button><button data-view="history"><span aria-hidden="true">📅</span>Storico</button><button data-view="settings"><span aria-hidden="true">⚙️</span>Profilo</button></nav>
 
 <div class="shade" id="sheetShade"></div>
 <div class="sheet" id="actionSheet"><h2>Cosa vuoi aggiungere?</h2><p>Il cibo aumenta le calorie introdotte; l'attività viene conteggiata nella spesa energetica.</p><button class="choice" id="chooseFood"><span class="emoji">🍎</span><span><strong>Cibo</strong><small>Dispensa, database o kcal dirette</small></span></button><button class="choice" id="chooseActivity"><span class="emoji">🏃</span><span><strong>Allenamento / attività</strong><small>Calorie attive stimate</small></span></button><button class="choice" id="chooseSteps"><span class="emoji">👟</span><span><strong>Passi</strong><small>Inserisci il totale giornaliero del tracker</small></span></button></div>
@@ -490,7 +532,7 @@ main{max-width:760px; margin:auto; padding:16px 14px 110px}
 'use strict';
 const $=id=>document.getElementById(id), STORE='bilancioCaloricoApp_v1';
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
-const fmt=x=>Math.round(Number(x)||0).toLocaleString('it-IT');
+const fmt=x=>Math.round(Number(x)||0).toString();
 const num=v=>{const x=Number(v);return Number.isFinite(x)&&x>0?x:0};
 const val=(v,f=0)=>v!==undefined&&v!==null&&v!==''&&Number.isFinite(Number(v))?Number(v):f;
 const defaults={version:5.19,pantry:[],days:{},settings:{target:null,targetEdited:false,gender:'male',age:30,weight:70,height:175,activity:1.2}};
@@ -633,7 +675,7 @@ function renderFoods(){
   const del=document.createElement('button');del.className='iconbtn';del.textContent='×';del.onclick=()=>{const day=current();if(!dayEditable(day))return;day.foods.splice(i,1);persist();render()};
   right.append(kcal,del);row.append(left,right);box.append(row);
  });
- acts.forEach((a,i)=>{
+ acts.forEach((i,a)=>{
   const row=document.createElement('div');row.className='foodrow';
   const left=document.createElement('div');const strong=document.createElement('strong');strong.textContent='🏃 '+a.name;const small=document.createElement('small');small.textContent='Attività fisica · calorie attive';left.append(strong,small);
   const right=document.createElement('div');right.className='foodright';const kcal=document.createElement('b');kcal.textContent=`−${fmt(a.kcal)} kcal`;kcal.style.color='var(--green)';
@@ -711,11 +753,11 @@ function showView(v){document.querySelectorAll('.view').forEach(el=>el.classList
 
 function renderFoodChoices(){
  const q=$('foodSearch').value.toLowerCase().trim(),box=$('foodChoices');box.replaceChildren();
- const all=[...db.pantry.map(f=>({...f,source:'Dispensa'})),...foods.map(f=>({...f,source:'Database'}))];
+ const all=[...db.pantry.map(f=>({...f,source:'🏪'})),...foods.map(f=>({...f,source:''}))];
  all.filter(f=>f.name.toLowerCase().includes(q)).forEach(f=>{
   const b=document.createElement('button');b.className='suggestion';
-  const span=document.createElement('span');const strong=document.createElement('strong');strong.textContent=(f.source==='Dispensa'?'🏪 ':'')+f.name;
-  const small=document.createElement('small');small.textContent=`${f.source} · 100g`;span.append(strong,small);
+  const span=document.createElement('span');const strong=document.createElement('strong');strong.textContent=(f.source?f.source+' ':'')+f.name;
+  const small=document.createElement('small');small.textContent=` · 100g`;span.append(strong,small);
   const kcal=document.createElement('b');kcal.textContent=`${f.k} kcal`;b.append(span,kcal);
   b.onclick=()=>{selectedFood=f;closeAllModals();$('quantTitle').textContent=f.name;$('quantSub').textContent=`${f.k} kcal per 100 g.`;$('quantInput').value='100';openModal('quantityModal');$('quantInput').focus()};
   box.append(b);
@@ -757,7 +799,7 @@ $('homeSteps').addEventListener('input',()=>{
 });
 $('addFoodHome').onclick=()=>{const d=current();if(!dayEditable(d))return;openModal('foodModal');$('foodSearch').value='';renderFoodChoices();$('foodSearch').focus()};
 $('addActivityHome').onclick=()=>{const d=current();if(!dayEditable(d))return;openModal('activityModal');$('activityKcal').value='';$('activityName').value=''};
-$('sheetShade').onclick=closeAction;$('modalShade').onclick=closeAllModals;
+$('sheetShade').onclick=closeAction;$('modalShade').classList.remove('open');
 $('chooseFood').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;openModal('foodModal');$('foodSearch').value='';renderFoodChoices();$('foodSearch').focus()};
 $('chooseActivity').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;openModal('activityModal');$('activityKcal').value='';$('activityName').value=''};
 $('chooseSteps').onclick=()=>{closeAction();const d=current();if(!dayEditable(d))return;$('stepsTotal').value=current().totalSteps||'';updateStepsPreview();openModal('stepsModal')};
