@@ -1,0 +1,21 @@
+{
+  "name": "Bilancio Calorico v5.19",
+  "short_name": "Bilancio",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#12091f",
+  "theme_color": "#ff007f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f3cb.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f3cb.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
